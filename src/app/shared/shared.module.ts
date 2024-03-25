@@ -9,7 +9,7 @@ import { Error404PageComponent } from './pages/error404-page/error404-page.compo
     Error404PageComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
   ],
   exports: [
     Error404PageComponent

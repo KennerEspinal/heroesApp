@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'auth-login-page',
@@ -6,5 +7,5 @@ import { Component } from '@angular/core';
   styles: ``
 })
 export class LoginPageComponent {
-
+  
 }
