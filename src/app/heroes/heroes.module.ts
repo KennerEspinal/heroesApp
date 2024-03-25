@@ -11,6 +11,7 @@ import { MaterialModule } from '../material/material.module';
 import { CardHeroComponent } from './components/card-hero/card-hero.component';
 import { HeroImagePipe } from './pipes/hero-image.pipe';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DialogHeroComponent } from './components/dialog-hero/dialog-hero.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     NewHeroPageComponent,
     SearchPageComponent,
     CardHeroComponent,
-    HeroImagePipe
+    HeroImagePipe,
+    DialogHeroComponent
   ],
   imports: [
     CommonModule,

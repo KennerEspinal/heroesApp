@@ -3,7 +3,11 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Hero, Publisher } from '../../interfaces/hero.interface';
 import { HeroService } from '../../services/hero.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { switchMap } from 'rxjs';
+import { filter, switchMap, tap } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogHeroComponent } from '../../components/dialog-hero/dialog-hero.component';
+
 
 @Component({
   selector: 'new-hero-page',
@@ -31,6 +35,8 @@ export class NewHeroPageComponent implements OnInit {
     private hS: HeroService,
     private aR: ActivatedRoute,
     private router: Router,
+    private sB: MatSnackBar,
+    private dM: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -56,16 +62,40 @@ export class NewHeroPageComponent implements OnInit {
   onSubmit() {
 
     if (this.heroForm.invalid) return;
-    // this.hS.updateHero(this.heroForm.value)
 
     if (this.currentHero.id) {
       this.hS.updateHero(this.currentHero)
-        .subscribe(hero => console.log('Actualizado', hero));
+        .subscribe(hero => this.showSnackBar(`${hero.superhero} Actualizado`));
       return;
     }
 
     this.hS.addHero(this.currentHero)
-      .subscribe(hero => console.log('Creado', hero));
+      .subscribe(hero => {
+        this.router.navigate(['/heroes/edit', hero.id]);
+        this.showSnackBar(`${hero.superhero} Creado`)
+      });
+  }
 
+  onConfirmDelete() {
+    if (!this.currentHero.id) throw new Error('No se puede eliminar un heroe sin id');
+    const dialogRef = this.dM.open(DialogHeroComponent, {
+      data: this.heroForm.value,
+    });
+
+    dialogRef.afterClosed()
+      .pipe(
+        filter((result: boolean) => result),
+        switchMap(() => this.hS.deleteHeroById(this.currentHero.id)),
+        filter((wasDeleted: boolean) => wasDeleted),
+      )
+      .subscribe(result => {
+        this.router.navigate(['/heroes']);
+      });
+  }
+
+  showSnackBar(message: string) {
+    this.sB.open(message, 'Ok!', {
+      duration: 2500
+    });
   }
 }
